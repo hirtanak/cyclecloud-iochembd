@@ -32,6 +32,8 @@ ioChem-BD用のテンプレートになっています。
 1. cyclecloudコマンドラインからテンプレートインストール 
    - tar zxvf cyclecloud-iochembd<version>.tar.gz
    - /blobディレクトリにGAMESSやNAMDなどソースコード、およびバイナリを設定します。
+         - cd blob
+         - wget https://hirostpublicshare.blob.core.windows.net/solvers/blobs.tar.gz
    - cd cyclecloud-iochembd<version>
    - cyclecloud project upload cyclecloud-storage
    - cyclecloud import_template -f templates/slurm-iochembd-nfs.txt
