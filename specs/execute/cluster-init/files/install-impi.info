@@ -1,0 +1,57 @@
+#!/bin/csh
+
+#   Compilation configuration for GAMESS
+#   Generated on ip-0A000423
+#   Generated at Wed May 13 08:38:40 UTC 2020
+
+#                GAMESS Paths                  #
+setenv GMS_PATH            /mnt/exports/apps/gamess-impi
+setenv GMS_BUILD_DIR       /mnt/exports/apps/gamess-impi
+
+#                Machine Type                  #
+setenv GMS_TARGET          linux64
+
+#            FORTRAN Compiler Setup            #
+setenv GMS_FORTRAN         gfortran
+setenv GMS_GFORTRAN_VERNO  4.8
+
+#         Mathematical Library Setup           #
+setenv GMS_MATHLIB         none
+setenv GMS_AMD_BLAS_PATH
+#         parallel message passing model setup
+setenv GMS_DDI_COMM        mpi
+setenv GMS_MPI_LIB         impi
+setenv GMS_MPI_PATH        /opt/intel/compilers_and_libraries/linux/mpi
+
+#   Michigan State University Coupled Cluster  #
+setenv GMS_MSUCC           false
+
+# Please match any manual changes to the       #
+# GMS_MSUCC flag in /mnt/exports/apps/gamess-impi/Makefile     
+# before running make                          #
+
+#         LIBCCHEM CPU/GPU Code Interface      #
+setenv GMS_LIBCCHEM        false
+
+#      Intel Xeon Phi Build: none/knc/knl      #
+setenv GMS_PHI             none
+
+#         Shared Memory Type: sysv/posix       #
+setenv GMS_SHMTYPE         sysv
+
+#      GAMESS OpenMP support: true/false       #
+setenv GMS_OPENMP          false
+
+# Please match any manual changes to the       #
+# GMS_OPENM flag in /mnt/exports/apps/gamess-impi/Makefile     
+# before running make                          #
+
+#             Singularity Setup                #
+setenv GMS_CONTAINER
+setenv GMS_CONTAINER_PATH  /mnt/exports/apps/gamess-impi
+
+################################################
+# Added any additional environmental variables #
+# or module loads below if needed.             #
+################################################
+setenv GMS_FPE_FLAGS       '-ffpe-trap=invalid,zero,overflow'

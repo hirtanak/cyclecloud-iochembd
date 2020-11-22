@@ -1,0 +1,7 @@
+GMS_PATH = /mnt/exports/apps/gamess-sockets
+GMS_VERSION = 00
+GMS_BUILD_PATH = /mnt/exports/apps/gamess-sockets
+GMS_OPENMP = false
+GMS_MSUCC = false
+GMS_LIBCCHEM = false
+include $(GMS_PATH)/Makefile.in
