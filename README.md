@@ -10,18 +10,17 @@ ioChem-BD用のテンプレートになっています。
 
 1. Slurmジョブスケジューラをschedulerノードにインストール
 1. H16r, H16r_Promo, HC44rs, HB60rs, HB120rs_v2などソルバー利用を想定した設定
-         - OpenLogic CentOS 7.6 HPC を利用 
+    - OpenLogic CentOS 7.6 HPC を利用 
 1. NFS設定されており、ホームディレクトリが永続ディスク設定。Executeノード（計算ノード）からNFSをマウント
 1. MasterノードのIPアドレスを固定設定
-         - 一旦停止後、再度起動した場合にアクセスする先のIPアドレスが変更されない
+    - 一旦停止後、再度起動した場合にアクセスする先のIPアドレスが変更されない
 1. 対応ソルバ
-         - Quantum ESPRESSO 6.4.1, 6.5, 6.6
-         - RSM RISM Quantum ESPRESOO 6.1ベース
-         - GROMACS 2018, 2019, 2020
-         - LAMMPS stable_7Aug2019
-    stable_3Mar2020, stable_29Oct2020 
-         - NAMD
-         - GAMESS (対応中)
+    - Quantum ESPRESSO 6.4.1, 6.5, 6.6
+    - RSM RISM Quantum ESPRESOO 6.1ベース
+    - GROMACS 2018, 2019, 2020
+    - LAMMPS stable_7Aug2019, stable_3Mar2020, stable_29Oct2020 
+    - NAMD
+    - GAMESS (対応中)
 
 ## テンプレートインストール方法
 
