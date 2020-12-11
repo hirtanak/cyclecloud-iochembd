@@ -1,4 +1,4 @@
-# Azure CycleCloud template for ioChem-BD and Solovers
+# Azure CycleCloud テンプレート for ioChem-BD and Solovers
 
 [Azure CycleCloud](https://docs.microsoft.com/en-us/azure/cyclecloud/) はMicrosoft Azure上で簡単にCAE/HPC/Deep Learning用のクラスタ環境を構築できるソリューションです。
 
@@ -47,6 +47,10 @@ ioChem-BD用のテンプレートになっています。
 ![picture02](https://user-images.githubusercontent.com/1019104/101869941-f7fac380-3bc3-11eb-8f65-30e79893a4cf.png)
 
 ![picture03](https://user-images.githubusercontent.com/1019104/101869947-fa5d1d80-3bc3-11eb-89fe-66c926169f63.png)
+
+![picture04](https://user-images.githubusercontent.com/1019104/101871921-c257d980-3bc7-11eb-922b-1929a2cc92e5.png)
+
+![picture05](https://user-images.githubusercontent.com/1019104/101872183-2b3f5180-3bc8-11eb-9596-20cbee6cf5f0.png)
 
 **アクセス先のURL: https://testcc01.japaneast.cloudapp.azure.com:8443(東日本リージョンの場合)**
 
