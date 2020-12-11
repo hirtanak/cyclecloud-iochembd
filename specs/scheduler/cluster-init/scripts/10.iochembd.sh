@@ -49,7 +49,8 @@ if [[ ! -d ${HOMEDIR}/apps ]]; then
     chown -R ${CUSER}:${CUSER} ${HOMEDIR}/apps
 fi 
 
-# 
+# set up docker install
+set +u
 CMD=$(docker run hello-world) | exit 0
 if [[ -z  $CMD ]] || [[ $CMD = "None" ]]; then
     yum install -y yum-utils device-mapper-persistent-data lvm2
@@ -59,6 +60,7 @@ if [[ -z  $CMD ]] || [[ $CMD = "None" ]]; then
     systemctl enable docker
     docker run hello-world
 fi
+set -u
 
 DOCKER_VERSION=1.27.4
 if [[ ! -f ${HOMEDIR}/bin/docker-compose-* ]]; then
@@ -80,15 +82,41 @@ if [[ ! -d ${HOMEDIR}/iochem-bd-docker  ]]; then
 fi
 
 # nohup ${HOMEDIR}/bin/docker-compose up 2>&1 > ${HOMEDIR}/dockerlog.log
-CMD=$(grep docker-compose ${HOMEDIR}/.bashrc) | exit 0
-if [[ -z $CMD ]]; then
+set +u
+unset CMD && CMD=$(grep docker-compose ${HOMEDIR}/.bashrc) | exit 0
+if [[ ! -z ${CMD} ]]; then
     echo "nohup ${HOMEDIR}/bin/docker-compose up 2>&1 > ${HOMEDIR}/dockerlog.log" >> ${HOMEDIR}/.bashrc
 fi
-CMD=$(grep iochem-bd-with-data ${HOMEDIR}/.bashrc) | exit 0
-if [[ -z $CMD ]]; then
-    echo "sudo /usr/bin/docker run -d --ulimit nofile=20000:65535 --name iochem-bd-with-data --add-host test.iochem-bd.org:127.0.0.1 -p 8443:8443 --hostname test.iochem-bd.org iochembd/iochem-bd-docker:latest-with-data" >> ${HOMEDIR}/.bashrc
+set -u
+#CMD=$(grep iochem-bd-with-data ${HOMEDIR}/.bashrc) | exit 0
+#if [[ -z $CMD ]]; then
+#    echo "sudo /usr/bin/docker run --restart=always -d --ulimit nofile=20000:65535 --name iochem-bd-with-data --add-host test.iochem-bd.org:127.0.0.1 -p 8443:8443 --hostname test.iochem-bd.org iochembd/iochem-bd-docker:latest-with-data" >> ${HOMEDIR}/.bashrc
+#fi 
+#CMD=$(grep startioche.sh ${HOMEDIR}/.bashrc) | exit 0
+#if [[ -z $CMD ]]; then
+#    echo "s" >> ${HOMEDIR}/.bashrc
+#fi 
 
-fi 
+# file settings
+if [[ ! -f ${HOMEDIR}/startiochem.sh ]]; then
+   cp ${CYCLECLOUD_SPEC_PATH}/files/startiochem.sh ${HOMEDIR}/startiochem.sh
+   chown ${CUSER}:${CUSER} ${HOMEDIR}/startiochem.sh
+   chmod a+x ${HOMEDIR}/startiochem.sh
+fi
+chown ${CUSER}:${CUSER} ${HOMEDIR}/startiochem.sh
+chmod a+x ${HOMEDIR}/startiochem.sh
+
+${HOMEDIR}/startiochem.sh > startiochemlog.log &
+
+set +u
+unset CMD && CMD=$(sudo docker ps  -a | grep iochem-bd-docker)
+if [[ -z ${CMD} ]]; then
+    echo "error dokcer start up. restart"
+    ${HOMEDIR}/startiochem.sh > startiochemlog02.log &
+else
+    echo "start up iochem docker"
+fi
+set -u
 
 #clean up
 popd

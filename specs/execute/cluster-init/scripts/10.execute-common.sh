@@ -2,7 +2,7 @@
 # Copyright (c) 2020 Hiroshi Tanaka, hirtanak@gmail.com @hirtanak
 set -exuv
 
-SW=gromacs
+SW=common
 echo "starting 40.install-${SW}.sh"
 
 export LC_ALL=en_US.UTF-8
@@ -64,4 +64,4 @@ if [[ ${CORES} = 60 ]] ; then
 fi
 
 
-echo "end of 10.execute-common.sh"
+echo "end of 10.execute-${SW}.sh"

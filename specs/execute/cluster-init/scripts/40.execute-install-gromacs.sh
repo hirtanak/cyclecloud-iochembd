@@ -118,8 +118,8 @@ case ${GROMACS_GPU_COMPILE} in
     True )
     # CUDA version settings
     #CUDA_VERSION=$(jetpack config CUDA_VERSION)
-    CUDA_VERSION=10.2
-    CUDA_BUILD=89
+    CUDA_VERSION=10.0
+    CUDA_BUILD=130 # 10.0:130, 10.1:243, 10.2:89
     # set up NVIDIA driver and compute nodes
     set +u
     unset CMD && CMD=$(cat /proc/driver/nvidia/version | head -1 | awk '{print $3}') | exit 0
@@ -138,29 +138,33 @@ case ${GROMACS_GPU_COMPILE} in
     set -u
     # build GPU
     if [[ ! -d ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}/bin ]]; then
+	set +u
         rm -rf ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}/build | exit 0 && mkdir -p ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}/build
         chown ${CUSER}:${CUSER} ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}/build
         # check cmake version
-        if [[ -f ${HOMEDIR}/apps/cmake-${CMAKE_VERSION}-Linux-x86_64/bin/cmake ]]; then
-            # due to parameter proceecing
-            set +u
-            export PATH=$(echo -n $PATH |tr ':' '\n' |sed '/opt\/gcc-9.2.0\/bin/d' |tr '\n' ':')
-            export PATH=$(echo -n $LD_LIBRARY_PATH |tr ':' '\n' |sed '/opt\/gcc-9.2.0\/lib64/d' |tr '\n' ':')
-            yum install -y centos-release-scl
-            yum install -y devtoolset-8
-            scl enable devtoolset-8 bash
-            export PATH=/opt/rh/devtoolset-8/root/bin:$PATH
-            export LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/lib64:$LD_LIBRARY_PATH
-            # build gpy settings
-            cd ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}/build && ${HOMEDIR}/apps/cmake-${CMAKE_VERSION}-Linux-x86_64/bin/cmake ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION} -DGMX_BUILD_OWN_FFTW=ON -DREGRESSIONTEST_DOWNLOAD=ON -DCMAKE_C_COMPILER="/opt/${OPENMPI_PATH}/bin/mpicc" -DCMAKE_CXX_COMPILER="/opt/${OPENMPI_PATH}/bin/mpicxx" -DCMAKE_INSTALL_PREFIX="${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}" ${PLATFORM} -DGMX_MPI=ON -DGMX_GPU=ON -DGMX_DOUBLE=OFF
-            make -j ${CORES}
-            make install
-            chown -R ${CUSER}:${CUSER} ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}
-            # process after build
-            set -u
-            yum remove -y cmake gcc centos-release-scl devtoolset-8
-            export PATH=$(echo -n $PATH |tr ':' '\n' |sed '/opt\/rh\/devtoolset-8\/root\/bin/d' |tr '\n' ':')
-            export PATH=$(echo -n $LD_LIBRARY_PATH |tr ':' '\n' |sed '/opt\/rh\/devtoolset-8\/root\/lib64/d' |tr '\n' ':')
+        if [[ -f ${HOMEDIR}/apps/cmake-${CMAKE_VERSION}-Linux-x86_64/bin/cmake ]]; then 
+            unset CMD && CMD=$(lspci | grep NVIDIA) | exit 0
+            if [[ ! -s ${CMD} ]]; then
+                # due to parameter proceecing
+                set +u
+                export PATH=$(echo -n $PATH |tr ':' '\n' |sed '/opt\/gcc-9.2.0\/bin/d' |tr '\n' ':')
+                export LD_LIBRARY_PATH=$(echo -n $LD_LIBRARY_PATH |tr ':' '\n' |sed '/opt\/gcc-9.2.0\/lib64/d' |tr '\n' ':')
+                yum install -y centos-release-scl
+                yum install -y devtoolset-7
+                scl enable devtoolset-7 bash
+                export PATH=/opt/rh/devtoolset-7/root/bin:$PATH
+                export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/lib64:$LD_LIBRARY_PATH
+                # build gpy settings
+                cd ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}/build && ${HOMEDIR}/apps/cmake-${CMAKE_VERSION}-Linux-x86_64/bin/cmake ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION} -DGMX_BUILD_OWN_FFTW=ON -DREGRESSIONTEST_DOWNLOAD=ON -DCMAKE_C_COMPILER="/opt/${OPENMPI_PATH}/bin/mpicc" -DCMAKE_CXX_COMPILER="/opt/${OPENMPI_PATH}/bin/mpicxx" -DCMAKE_INSTALL_PREFIX="${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}" ${PLATFORM} -DGMX_MPI=ON -DGMX_GPU=ON -DGMX_DOUBLE=OFF
+                make -j ${CORES}
+                make install
+                chown -R ${CUSER}:${CUSER} ${HOMEDIR}/apps/gromacs-${GROMACS_VERSION}
+                # process after build
+                set -u
+                yum remove -y cmake gcc centos-release-scl devtoolset-7
+                export PATH=$(echo -n $PATH |tr ':' '\n' |sed '/opt\/rh\/devtoolset-7\/root\/bin/d' |tr '\n' ':')
+                export PATH=$(echo -n $LD_LIBRARY_PATH |tr ':' '\n' |sed '/opt\/rh\/devtoolset-7\/root\/lib64/d' |tr '\n' ':')
+            fi
         fi
     fi
     ;;

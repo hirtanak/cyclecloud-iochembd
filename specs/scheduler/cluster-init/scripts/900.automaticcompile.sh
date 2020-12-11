@@ -37,6 +37,10 @@ AUTOMATIC_COMPILE=$(jetpack config AUTOMATIC_COMPILE)
 # GPU compile setting
 GROMACS_GPU_COMPILE=$(jetpack config GROMACS_GPU_COMPILE)
 
+# Create tempdir
+tmpdir=$(mktemp -d)
+pushd $tmpdir
+
 if [[ ${AUTOMATIC_COMPILE} = "True" ]]; then
 #   echo "sleep 180" > ${HOMEDIR}/sleep.sh
 #   chown ${CUSER}:${CUSER} ${HOMEDIR}/sleep.sh
@@ -53,10 +57,6 @@ if [[ ${AUTOMATIC_COMPILE} = "True" ]]; then
        sudo -u ${CUSER} /usr/bin/sbatch -p htc -N 1 -t 120 ${HOMEDIR}/sleep.sh
    fi
 fi
-
-# Create tempdir
-tmpdir=$(mktemp -d)
-pushd $tmpdir
 
 # file settings
 if [[ ! -d ${HOMEDIR}/logs ]]; then

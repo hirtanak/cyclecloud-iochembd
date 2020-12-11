@@ -36,7 +36,7 @@ ioChem-BD用のテンプレートになっています。
          - wget https://hirostpublicshare.blob.core.windows.net/solvers/blobs.tar.gz
    - cd cyclecloud-iochembd<version>
    - cyclecloud project upload cyclecloud-storage
-   - cyclecloud import_template -f templates/slurm-iochembd-nfs.txt
+   - cyclecloud import_template -f templates/slurm-iochembd.txt
 1. 削除したい場合、 cyclecloud delete_template ioChem-BD コマンドで削除可能
 
 ***

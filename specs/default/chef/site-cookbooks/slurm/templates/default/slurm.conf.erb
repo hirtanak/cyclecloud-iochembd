@@ -10,8 +10,6 @@ StateSaveLocation=/var/spool/slurmd
 SwitchType=switch/none
 TaskPlugin=task/affinity,task/cgroup
 SchedulerType=sched/backfill
-#SelectType=select/cons_res
-# modified 2020/11/06
 SelectType=select/cons_tres
 GresTypes=gpu
 SelectTypeParameters=CR_Core_Memory
@@ -35,10 +33,10 @@ ResumeProgram=<%= @bootstrap %>/resume_program.sh
 ResumeFailProgram=<%= @bootstrap %>/resume_fail_program.sh
 SuspendProgram=<%= @bootstrap %>/suspend_program.sh
 SchedulerParameters=max_switch_wait=24:00:00
-#<% if @accountingenabled = true %>
-#AccountingStorageType=accounting_storage/slurmdbd
-#AccountingStorageHost="localhost"
-#<% else %>
-#AccountingStorageType=accounting_storage/none
-#<% end %>
+<% if @accountingenabled == true %>
+AccountingStorageType=accounting_storage/slurmdbd
+AccountingStorageHost="localhost"
+<% else %>
+AccountingStorageType=accounting_storage/none
+<% end %>
 Include cyclecloud.conf

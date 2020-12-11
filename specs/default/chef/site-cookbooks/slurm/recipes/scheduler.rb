@@ -48,15 +48,18 @@ scripts.each do |filename|
         mode "0755"
         owner "root"
         group "root"
+        not_if { ::File.exist?("#{node[:cyclecloud][:bootstrap]}/slurm/#{filename}")}
     end
 end
 
 # TODO either change name to cyclecloud-api.tar.gz or make the name configurable
 bash 'Install cyclecloud python api' do
   code <<-EOH
-    jetpack download --project ioChem-BD cyclecloud-api-7.9.2.tar.gz cyclecloud-api.tar.gz || exit 1;
-    /opt/cycle/jetpack/system/embedded/bin/pip install cyclecloud-api.tar.gz || exit 1;
-    rm -f cyclecloud-api.tar.gz;
+    #!/bin/bash
+    cd #{node[:cyclecloud][:bootstrap]}
+    jetpack download --project ioChem-BD #{node[:slurm][:cyclecloud_api]} #{node[:slurm][:cyclecloud_api]} || exit 1;
+    /opt/cycle/jetpack/system/embedded/bin/pip install #{node[:slurm][:cyclecloud_api]} || exit 1;
+    rm -f #{node[:slurm][:cyclecloud_api]}
     touch /etc/cyclecloud-api.installed
     EOH
   not_if { ::File.exist?('/etc/cyclecloud-api.installed') }
@@ -84,7 +87,8 @@ template '/sched/slurm.conf' do
     :bootstrap => "#{node[:cyclecloud][:bootstrap]}/slurm",
     :resume_timeout => node[:slurm][:resume_timeout],
     :suspend_timeout => node[:slurm][:suspend_timeout],
-    :suspend_time => node[:cyclecloud][:cluster][:autoscale][:idle_time_after_jobs]
+    :suspend_time => node[:cyclecloud][:cluster][:autoscale][:idle_time_after_jobs],
+    :accountingenabled => node[:slurm][:accounting][:enabled]
   }}
 end
 
@@ -107,6 +111,9 @@ link '/etc/slurm/slurm.conf' do
   owner "#{slurmuser}"
   group "#{slurmuser}"
 end
+
+
+
 
 
 template '/sched/cgroup.conf' do
@@ -152,12 +159,19 @@ bash 'Create cyclecloud.conf' do
     
     #{node[:cyclecloud][:bootstrap]}/slurm/cyclecloud_slurm.sh create_nodes --policy $policy || exit 1;
     #{node[:cyclecloud][:bootstrap]}/slurm/cyclecloud_slurm.sh slurm_conf > /sched/cyclecloud.conf || exit 1;
+    #{node[:cyclecloud][:bootstrap]}/slurm/cyclecloud_slurm.sh gres_conf > /sched/gres.conf || exit 1;
     #{node[:cyclecloud][:bootstrap]}/slurm/cyclecloud_slurm.sh topology > /sched/topology.conf || exit 1;
     touch /etc/slurm.installed
     EOH
   not_if { ::File.exist?('/etc/slurm.installed') }
 end
 
+link '/etc/slurm/gres.conf' do
+  to '/sched/gres.conf'
+  owner "#{slurmuser}"
+  group "#{slurmuser}"
+  only_if { ::File.exist?('/sched/gres.conf') }
+end
 
 link '/etc/slurm/topology.conf' do
   to '/sched/topology.conf'
@@ -178,6 +192,21 @@ cookbook_file "/etc/security/limits.d/slurm-limits.conf" do
   mode "0644"
   action :create
 end
+
+directory "/etc/systemd/system/slurmctld.service.d" do
+  owner "root"
+  group "root"
+  mode "0755"
+end 
+
+cookbook_file "/etc/systemd/system/slurmctld.service.d/override.conf" do
+  source "slurmctld.override"
+  owner "root"
+  group "root"
+  mode "0644"
+  action :create
+end
+
 
 include_recipe 'slurm::accounting'
 
