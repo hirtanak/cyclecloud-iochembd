@@ -38,6 +38,25 @@ ioChem-BD用のテンプレートになっています。
    - cyclecloud project upload cyclecloud-storage
    - cyclecloud import_template -f templates/slurm-iochembd.txt
 1. 削除したい場合、 cyclecloud delete_template ioChem-BD コマンドで削除可能
+         
+## 利用方法
+1. 作成されるスケジューラーノードの仮想マシンに利用するFQDNを設定する
+![picture00](https://user-images.githubusercontent.com/1019104/101869919-f0d3b580-3bc3-11eb-8898-0d894a9e944c.png)
+
+![picture01](https://user-images.githubusercontent.com/1019104/101869937-f4ffd300-3bc3-11eb-83ad-c10a41df5e38.png)
+
+![picture02](https://user-images.githubusercontent.com/1019104/101869941-f7fac380-3bc3-11eb-8f65-30e79893a4cf.png)
+
+![picture03](https://user-images.githubusercontent.com/1019104/101869947-fa5d1d80-3bc3-11eb-89fe-66c926169f63.png)
+
+**アクセス先のURL: https://testcc01.japaneast.cloudapp.azure.com:8443(東日本リージョンの場合)**
+
+- testcc01: テンプレート作成時に指定したURL、またVMのFQDNとして登録したサブドメイン
+- japaneast.cloudapp.azure.com
+- 利用ポート 8443
+
+## 制限事項
+1. GPUが利用できるリージョンでの利用を想定しています。東日本リージョンなどが対象です。西日本は対応していません。
 
 ***
 Copyright Hiroshi Tanaka, hirtanak@gmail.com, @hirtanak All rights reserved.
